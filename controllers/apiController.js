@@ -1,6 +1,6 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
-const post = require('../models/postSchema.js');
+const PostModel = require('../models/postSchema.js');
 
 /* Get all posts & comments */
 exports.api_get_all_content = asyncHandler(async (req, res, next) => {
@@ -9,7 +9,16 @@ exports.api_get_all_content = asyncHandler(async (req, res, next) => {
 
 /* Create a new post */
 exports.api_post_create = asyncHandler(async (req, res, next) => {
-  res.send('apiController: create new post not yet implemented.');
+  const [title, body] = [req.body.title, req.body.body];
+  if (typeof title === 'undefined' || typeof body === 'undefined') {
+    res.send("Post needs a title and a body!")
+  };
+  const post = new PostModel({
+    title: title,
+    body: body,
+  });
+  await post.save();
+  res.send(post);
 });
 
 /* Update an existing post */
