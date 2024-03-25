@@ -8,6 +8,12 @@ const PostSchema = new Schema({
   body: { type: String, required: true, maxLength: 100 },
   author: { type: String, default: "Billy" },
   timeStamp: { type: Date, default: Date.now },
+  type: {
+    type: String,
+    required: true,
+    enum: ["Article", "Blurb", "Link", "Media"],
+    default: "Article",
+  },
 });
 
 // Virtual for post URL
