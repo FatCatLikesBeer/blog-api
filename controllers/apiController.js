@@ -9,16 +9,22 @@ exports.api_get_all_content = asyncHandler(async (req, res, next) => {
 
 /* Create a new post */
 exports.api_post_create = asyncHandler(async (req, res, next) => {
-  const [title, body] = [req.body.title, req.body.body];
-  if (typeof title === 'undefined' || typeof body === 'undefined') {
-    res.send("Post needs a title and a body!")
+  const [title, body, secret] = [req.body.title, req.body.body, req.body.secret];
+  if (secret === process.env.BLOG_SECRET) {
+    if (typeof title === 'undefined' || typeof body === 'undefined') {
+      res.send("Post needs a title and a body!")
+    };
+    const post = new PostModel({
+      title: title,
+      body: body,
+    });
+    await post.save();
+    res.send(post);
+  } else {
+    res.send({
+      error: "You are not authorized",
+    });
   };
-  const post = new PostModel({
-    title: title,
-    body: body,
-  });
-  await post.save();
-  res.send(post);
 });
 
 /* Update an existing post */
