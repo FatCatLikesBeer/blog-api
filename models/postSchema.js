@@ -23,9 +23,9 @@ PostSchema.virtual("url").get(function() {
 });
 
 // Virtual property for time stamp but formatted nicely.
-PostSchema.virtual("due_back_formatted").get(function() {
+PostSchema.virtual("date").get(function() {
   // We don't use an arrow function as we'll need the 'this' object
-  return DateTime.fromJSDate(this.due_back).toLocaleString(DateTime.DATE_MED);
+  return DateTime.fromJSDate(this.timeStamp).toFormat('LLL dd, yyyy - h:mm a');
 });
 
 module.exports = mongoose.model("Post", PostSchema);

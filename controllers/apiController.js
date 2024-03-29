@@ -19,7 +19,7 @@ exports.api_post_create = asyncHandler(async (req, res, next) => {
       body: body,
     });
     await post.save();
-    res.send(post);
+    res.redirect('/',);
   } else {
     res.send({
       error: "You are not authorized",

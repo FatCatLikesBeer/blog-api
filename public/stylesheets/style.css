@@ -2,9 +2,33 @@ body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   background-color: #282828;
-  color: #DEDEDE;
+  align-items: center;
 }
 
 a {
   color: dodgerblue;
+}
+
+#title {
+  margin-bottom: 24px;
+  padding-left: 20px;
+}
+
+#main {
+  max-width: 850px;
+  margin: 0 12vw;
+}
+
+.post {
+  border: 2px solid grey;
+  padding: 18px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+@media ( max-width: 900px ) {
+  #main {
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
