@@ -5,13 +5,13 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
+const cors = require('cors');
 require('dotenv').config();
 
-// Import routes
 const indexRouter = require('./routes/indexRouter');
 const apiRouter = require('./routes/apiRouter');
+
+const app = express();
 
 //// ------ MongoDB Stuff ------ ////
 const mongoose = require("mongoose");
@@ -20,20 +20,14 @@ mongoose.connect(mongoDB);
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDb connection error"));
 
-//// ------ General App Stuff ------ ////
-// Instantiate our app :)
-const app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-// I think this is for cookies
-app.use(session({ secret: "cats", resave: false, saveUninitialized: true }));
-// This is for authentication.
-app.use(passport.session());
+
+app.use(cors());
+app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(logger('dev'));
-
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 

@@ -1,10 +1,16 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 const PostModel = require('../models/postSchema.js');
+const marked = require('marked');
 
 /* Get all posts & comments */
 exports.api_get_all_content = asyncHandler(async (req, res, next) => {
-  res.send('apiController: get all content not yet implemented.');
+  const getPosts = await PostModel.find().sort({ timeStamp: -1 }).exec();
+  allPosts = getPosts.map( e => {
+    e.body = marked.parse(e.body);
+    return e;
+  });
+  res.json(allPosts);
 });
 
 /* Create a new post */
@@ -19,11 +25,9 @@ exports.api_post_create = asyncHandler(async (req, res, next) => {
       body: body,
     });
     await post.save();
-    res.redirect('/',);
+    res.redirect('/');
   } else {
-    res.send({
-      error: "You are not authorized",
-    });
+    res.redirect('/error');
   };
 });
 
@@ -46,3 +50,5 @@ exports.api_comment_create = asyncHandler(async (req, res, next) => {
 exports.api_comment_delete = asyncHandler(async (req, res, next) => {
   res.send('apiController: delete existing comment not yet implemented.');
 });
+
+

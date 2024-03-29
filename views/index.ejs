@@ -1,14 +1,11 @@
 <%- include('layout_top')-%>
-  <div id="main">
-  <h1 id="title"><%= title %></h1>
   <% posts.forEach( e => { %>
     <div class="post">
-      <h2 style="color: gold;"><%= e.title %></h2>
+      <h2 style="color: gold;"><a href="<%= e.url %>"><%= e.title %></a></h2>
       <p>By: <i><%= e.author %></i></p>
       <p><%= e.date %></p>
       <%- e.body %>
       <button type="button" class="btn btn-primary">Comment</button>
     </div>
   <% }); %>
-  </div>
 <%- include('layout_bottom')-%>
