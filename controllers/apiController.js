@@ -3,6 +3,7 @@ const asyncHandler = require('express-async-handler');
 const PostModel = require('../models/postSchema.js');
 const marked = require('marked');
 
+////// ------ POST APIs ------ //////
 /* Get all posts & comments */
 exports.api_get_all_content = asyncHandler(async (req, res, next) => {
   const getPosts = await PostModel.find().sort({ timeStamp: -1 }).exec();
@@ -38,13 +39,14 @@ exports.api_post_create = asyncHandler(async (req, res, next) => {
       error: false,
       message: "Article Posted Successfully",
       postId: post._id,
-      redirect: '/',
+      redirect: `/post/${post._id}`,
     });
   } else {
     console.log("Wrong Secret");
     res.json({
       error: true,
       message: "Unauthorized",
+      postId: null;
     });
   };
 });
@@ -67,7 +69,7 @@ exports.api_post_update = asyncHandler(async (req, res, next) => {
       error: false,
       message: "Article Updated Successfully",
       postId: post._id,
-      redirect: '/',
+      redirect: `/post/${post._id}`,
     });
   } else {
     console.log("Wrong Secret");
@@ -81,17 +83,81 @@ exports.api_post_update = asyncHandler(async (req, res, next) => {
 
 /* Delete an existing post */
 exports.api_post_delete = asyncHandler(async (req, res, next) => {
-  res.send('apiController: delete existing post not yet implemented.');
+  const secret = req.body.secret;
+  let post;
+  if (secret === process.env.BLOG_SECRET) {
+    try {
+      post = await PostModel.findById(req.params.postId).exec();
+      await PostModel.findByIdAndDelete(req.params.postId);
+    } catch (error) {
+      res.json({
+        error: true,
+        message: "Error finding post by ID.",
+        postId: req.params.postId,
+      });
+    }
+    res.json({
+      error: false,
+      message: "Post Deleted Successfully",
+      postId: req.params.postId,
+      redirect: "/",
+    });
+  } else {
+    res.json({
+      error: true,
+      message: "Unauthorized",
+      postId: req.params.postId,
+    });
+  }
 });
 
+/* Get post detail */
+exports.api_post_detail = asyncHandler(async (req, res, next) => {
+  res.json({
+    postId: req.params.postId,
+    message: "Post detail GET API Endpoint not yet build",
+  });
+});
+
+////// ------ COMMENT APIs ------ //////
 /* Create a new comment */
 exports.api_comment_create = asyncHandler(async (req, res, next) => {
-  res.send('apiController: create new comment not yet implemented.');
+  res.json({
+    postId: req.params.postId,
+    message: "Comment POST API Endpoint not yet build",
+  });
 });
 
 /* Delete a comment */
 exports.api_comment_delete = asyncHandler(async (req, res, next) => {
-  res.send('apiController: delete existing comment not yet implemented.');
+  res.json({
+    postId: req.params.postId,
+    commentId: req.params.commentId,
+    message: "Comment DELETE API Endpoint not yet build",
+  });
 });
+
+/* Get comment detail */
+exports.api_comment_detail = asyncHandler(async (req, res, next) => {
+  res.json({
+    commentId: req.params.commentId,
+    message: "Comment detail GET API Endpoint not yet build",
+  });
+});
+
+// Error message layout
+//
+// {
+//   error: false,
+//   message: "Request Type Verbed Successfully",
+//   postId: req.params.postId || post._id,
+//   redirect: '/post/:postId' || '/',
+// }
+//
+// {
+//   error: true,
+//   message: "Message type",
+//   postId: req.params.postId,
+// }
 
 

@@ -6,6 +6,9 @@ const asyncHandler = require('express-async-handler');
 /* GET home page. */
 router.get('/', indexController.index_get);
 
+/* POST home page redirect */
+router.get('/post', (req, res, next) => {res.redirect('/')});
+
 /* Page for creating a post */
 router.get('/create', indexController.create_get);
 
