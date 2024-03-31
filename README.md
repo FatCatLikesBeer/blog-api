@@ -1,4 +1,4 @@
-#[The Odin Project: Blog with an API](https://www.theodinproject.com/lessons/nodejs-blog-api)
+# [The Odin Project: Blog with an API](https://www.theodinproject.com/lessons/nodejs-blog-api)
 
 This project is a cumulative excercise on building a web server through NodeJS and ExpressJS.
 
