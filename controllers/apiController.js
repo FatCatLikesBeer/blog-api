@@ -1,6 +1,7 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 const PostModel = require('../models/postSchema.js');
+const CommentModel = require('../models/commentSchema.js');
 const marked = require('marked');
 
 ////// ------ POST APIs ------ //////
@@ -9,6 +10,7 @@ exports.api_get_all_content = asyncHandler(async (req, res, next) => {
   let getPosts;
   try {
     getPosts = await PostModel.find().sort({ timeStamp: -1 }).exec();
+    getComments = [];
   } catch (error) {
     res.json({
       error: true,
@@ -16,6 +18,7 @@ exports.api_get_all_content = asyncHandler(async (req, res, next) => {
       postId: null,
     });
   };
+  // Mapping is needed to get the virtual properties to work properly.
   allPosts = getPosts.map( post => {
     const result = {
       title: post.title,
@@ -28,12 +31,25 @@ exports.api_get_all_content = asyncHandler(async (req, res, next) => {
     }
     return result;
   });
+  allComments = getComments.map( comment => {
+    const result = {
+      _id: comment._id,
+      author: comment.author,
+      body: comment.body,
+      date: comment.date,
+      url: comment.url,
+    }
+    return result;
+  });
   res.json({
     error: false,
     message: "Posts Retrieve Successfully",
     postId: null,
     redirect: '/',
-    data: allPosts,
+    data: {
+      posts: allPosts,
+      comments: allComments,
+    },
   });
 });
 
@@ -102,7 +118,11 @@ exports.api_post_delete = asyncHandler(async (req, res, next) => {
   let post;
   if (secret === process.env.BLOG_SECRET) {
     try {
+      const condition = { post: req.params.postId };
       post = await PostModel.findById(req.params.postId).exec();
+      await CommentModel.deleteMany(condition).catch( error => {
+        console.error("Error deleting comments", error);
+      });
       await PostModel.findByIdAndDelete(req.params.postId);
     } catch (error) {
       res.json({
@@ -131,12 +151,16 @@ exports.api_post_delete = asyncHandler(async (req, res, next) => {
 exports.api_post_detail = asyncHandler(async (req, res, next) => {
   try {
     const post = await PostModel.findById(req.params.postId).exec();
+    const comments = await CommentModel.find({ post: req.params.postId }).exec();
     res.json({
       error: false,
       message: "Post Retrieved Successfully",
       postId: req.params.postId,
       redirect: "/",
-      data: post,
+      data: {
+        post: marked.parse(post),
+        comments: comments,
+      },
     });
   } catch (error) {
     res.json({
@@ -150,10 +174,28 @@ exports.api_post_detail = asyncHandler(async (req, res, next) => {
 ////// ------ COMMENT APIs ------ //////
 /* Create a new comment */
 exports.api_comment_create = asyncHandler(async (req, res, next) => {
-  res.json({
-    postId: req.params.postId,
-    message: "Comment POST API Endpoint not yet build",
+  const [post, body, author] = [req.params.postId, req.body.body, req.body.author];
+  const newComment = new CommentModel({
+    post: post,
+    body: body,
+    author: author,
   });
+  try {
+    await newComment.save();
+    res.json({
+      error: false,
+      message: "Comment Posted Successfully",
+      postId: post,
+      redirect: `${newComment.url}`,
+      data: null
+    })
+  } catch (error) {
+    res.json({
+      error: true,
+      message: "Comment Posting Failed",
+      postId: post,
+    });
+  }
 });
 
 /* Delete a comment */

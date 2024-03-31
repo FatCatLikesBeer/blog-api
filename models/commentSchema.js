@@ -13,13 +13,13 @@ const CommentSchema= new Schema({
 // Virtual for post URL
 CommentSchema.virtual("url").get(function() {
   // We don't use an arrow function as we'll need the 'this' object
-  return `/post/${this._id}`;
+  return `/comment/${this._id}`;
 });
 
 // Virtual property for time stamp but formatted nicely.
 CommentSchema.virtual("due_back_formatted").get(function() {
   // We don't use an arrow function as we'll need the 'this' object
-  return DateTime.fromJSDate(this.due_back).toLocaleString(DateTime.DATE_MED);
+  return DateTime.fromJSDate(this.timeStamp).toFormat('LLL dd, yyyy - h:mm a');
 });
 
 module.exports = mongoose.model("Comment", CommentSchema);

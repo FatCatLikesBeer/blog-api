@@ -25,9 +25,9 @@ router.get('/post/:postId', apiController.api_post_detail);
 router.post('/post/:postId/comment', apiController.api_comment_create);
 
 /* DELETE a comment */
-router.delete('/post/:postId/comment/:commentId', apiController.api_comment_delete);
+router.delete('/comment/:commentId', apiController.api_comment_delete);
 
 /* GET comment detail */
-router.get('/post/:postId/comment/:commentId', apiController.api_post_detail);
+router.get('/comment/:commentId', apiController.api_post_detail);
 
 module.exports = router;

@@ -8,7 +8,8 @@ exports.index_get = asyncHandler(async (req, res, next) => {
   const allPosts = await fetch('http://127.0.01:3000/api/post').then(data => data.json());
   res.render('index', {
     title: "Billy's Blog",
-    posts: allPosts.data,
+    posts: allPosts.data.posts,
+    comments: allPosts.data.comments,
   });
 });
 
