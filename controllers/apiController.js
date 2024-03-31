@@ -6,9 +6,17 @@ const marked = require('marked');
 /* Get all posts & comments */
 exports.api_get_all_content = asyncHandler(async (req, res, next) => {
   const getPosts = await PostModel.find().sort({ timeStamp: -1 }).exec();
-  allPosts = getPosts.map( e => {
-    e.body = marked.parse(e.body);
-    return e;
+  allPosts = getPosts.map( post => {
+    const result = {
+      title: post.title,
+      body: marked.parse(post.body),
+      author: post.author,
+      _id: post._id,
+      date: post.date,
+      url: post.url,
+      type: post.type,
+    }
+    return result;
   });
   res.json(allPosts);
 });
@@ -25,9 +33,18 @@ exports.api_post_create = asyncHandler(async (req, res, next) => {
       body: body,
     });
     await post.save();
-    res.redirect('/');
+    console.log("Article Posted Successfully");
+    res.json({
+      error: false,
+      message: "Article Posted Successfully",
+      redirect: '/',
+    })
   } else {
-    res.redirect('/error');
+    console.log("Wrong Secret");
+    res.json({
+      error: true,
+      message: "Unauthorized",
+    })
   };
 });
 
