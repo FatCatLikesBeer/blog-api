@@ -17,7 +17,7 @@ CommentSchema.virtual("url").get(function() {
 });
 
 // Virtual property for time stamp but formatted nicely.
-CommentSchema.virtual("due_back_formatted").get(function() {
+CommentSchema.virtual("date").get(function() {
   // We don't use an arrow function as we'll need the 'this' object
   return DateTime.fromJSDate(this.timeStamp).toFormat('LLL dd, yyyy - h:mm a');
 });
