@@ -124,6 +124,13 @@ exports.api_post_delete = asyncHandler(async (req, res, next) => {
         console.error("Error deleting comments", error);
       });
       await PostModel.findByIdAndDelete(req.params.postId);
+      res.json({
+        error: false,
+        message: "Post Deleted Successfully",
+        postId: req.params.postId,
+        redirect: "/",
+        data: null,
+      });
     } catch (error) {
       res.json({
         error: true,
@@ -131,13 +138,6 @@ exports.api_post_delete = asyncHandler(async (req, res, next) => {
         postId: req.params.postId,
       });
     }
-    res.json({
-      error: false,
-      message: "Post Deleted Successfully",
-      postId: req.params.postId,
-      redirect: "/",
-      data: null,
-    });
   } else {
     res.json({
       error: true,
@@ -200,19 +200,53 @@ exports.api_comment_create = asyncHandler(async (req, res, next) => {
 
 /* Delete a comment */
 exports.api_comment_delete = asyncHandler(async (req, res, next) => {
-  res.json({
-    postId: req.params.postId,
-    commentId: req.params.commentId,
-    message: "Comment DELETE API Endpoint not yet build",
-  });
+  const secret = req.body.secret;
+  if (secret === process.env.BLOG_SECRET) {
+    try {
+      const comment = await CommentModel.findById(req.params.commentId).exec();
+      const post = await PostModel.findById(comment.post).exec();
+      await CommentModel.findByIdAndDelete(req.params.commentId);
+      res.json({
+        error: false,
+        message: "Comment Deleted Successfully",
+        commentId: req.params.commentId,
+        redirect: post.url,
+        data: null,
+      })
+    } catch (error) {
+      res.json({
+        error: true,
+        message: "Comment Deletion Failed",
+        commentId: req.params.commentId,
+      })
+    }
+  } else {
+    res.json({
+      error: true,
+      message: "Unauthorized",
+      commentId: req.params.commentId,
+    });
+  };
 });
 
 /* Get comment detail */
 exports.api_comment_detail = asyncHandler(async (req, res, next) => {
-  res.json({
-    commentId: req.params.commentId,
-    message: "Comment detail GET API Endpoint not yet build",
-  });
+  try {
+    const comment = await CommentModel.findById(req.params.commentId);
+    res.json({
+      error: false,
+      message: "Comment Detail Retrieved Successfully",
+      commentId: req.params.commentId,
+      redirect: comment.url,
+      data: comment,
+    });
+  } catch (error) {
+    res.json({
+      error: true,
+      message: "Comment Detail Retrieval Failed",
+      commentId: req.params.commentId,
+    });
+  };
 });
 
 // Error message layout
