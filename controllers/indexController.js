@@ -6,11 +6,21 @@ const marked = require('marked');
 /* Index page GET */
 exports.index_get = asyncHandler(async (req, res, next) => {
   const allPosts = await fetch('http://127.0.01:3000/api/post').then(data => data.json());
-  res.render('index', {
-    title: "Billy's Blog",
-    posts: allPosts.data.posts,
-    comments: allPosts.data.comments,
-  });
+  if (allPosts.error === false) {
+    res.render('index', {
+      title: "Billy's Blog",
+      posts: allPosts.data.posts,
+      comments: allPosts.data.comments,
+    });
+  } else {
+    res.render('error', {
+      message: "Problem retrieving posts",
+      error: {
+        status: null,
+        stack: "index",
+      }
+    });
+  }
 });
 
 /* Create post page GET */
@@ -43,3 +53,11 @@ exports.create_post = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Error Structure
+// {
+//   message: message,
+//   error: {
+//     status: status,
+//     stack: stack,
+//   },
+// }
