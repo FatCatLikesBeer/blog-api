@@ -6,7 +6,16 @@ const marked = require('marked');
 ////// ------ POST APIs ------ //////
 /* Get all posts & comments */
 exports.api_get_all_content = asyncHandler(async (req, res, next) => {
-  const getPosts = await PostModel.find().sort({ timeStamp: -1 }).exec();
+  let getPosts;
+  try {
+    getPosts = await PostModel.find().sort({ timeStamp: -1 }).exec();
+  } catch (error) {
+    res.json({
+      error: true,
+      message: "Problem Retrieving Posts 😕",
+      postId: null,
+    });
+  };
   allPosts = getPosts.map( post => {
     const result = {
       title: post.title,
@@ -19,7 +28,13 @@ exports.api_get_all_content = asyncHandler(async (req, res, next) => {
     }
     return result;
   });
-  res.json(allPosts);
+  res.json({
+    error: false,
+    message: "Posts Retrieve Successfully",
+    postId: null,
+    redirect: '/',
+    data: allPosts,
+  });
 });
 
 /* Create a new post */
@@ -46,7 +61,7 @@ exports.api_post_create = asyncHandler(async (req, res, next) => {
     res.json({
       error: true,
       message: "Unauthorized",
-      postId: null;
+      postId: null,
     });
   };
 });
@@ -101,6 +116,7 @@ exports.api_post_delete = asyncHandler(async (req, res, next) => {
       message: "Post Deleted Successfully",
       postId: req.params.postId,
       redirect: "/",
+      data: null,
     });
   } else {
     res.json({
@@ -113,10 +129,22 @@ exports.api_post_delete = asyncHandler(async (req, res, next) => {
 
 /* Get post detail */
 exports.api_post_detail = asyncHandler(async (req, res, next) => {
-  res.json({
-    postId: req.params.postId,
-    message: "Post detail GET API Endpoint not yet build",
-  });
+  try {
+    const post = await PostModel.findById(req.params.postId).exec();
+    res.json({
+      error: false,
+      message: "Post Retrieved Successfully",
+      postId: req.params.postId,
+      redirect: "/",
+      data: post,
+    });
+  } catch (error) {
+    res.json({
+      error: true,
+      message: "Post Retrieval Failed",
+      postId: req.params.postId,
+    });
+  }
 });
 
 ////// ------ COMMENT APIs ------ //////
@@ -152,6 +180,7 @@ exports.api_comment_detail = asyncHandler(async (req, res, next) => {
 //   message: "Request Type Verbed Successfully",
 //   postId: req.params.postId || post._id,
 //   redirect: '/post/:postId' || '/',
+//   data: data,
 // }
 //
 // {
