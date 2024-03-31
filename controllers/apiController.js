@@ -37,20 +37,46 @@ exports.api_post_create = asyncHandler(async (req, res, next) => {
     res.json({
       error: false,
       message: "Article Posted Successfully",
+      postId: post._id,
       redirect: '/',
-    })
+    });
   } else {
     console.log("Wrong Secret");
     res.json({
       error: true,
       message: "Unauthorized",
-    })
+    });
   };
 });
 
 /* Update an existing post */
 exports.api_post_update = asyncHandler(async (req, res, next) => {
-  res.send('apiController: update existing post not yet implemented.');
+  const [title, body, secret] = [req.body.title, req.body.body, req.body.secret];
+  const post = await PostModel.findById(req.params.postId).exec();
+  const updatePost = new PostModel({
+    title: title,
+    body: body,
+    author: post.author,
+    _id: post._id,
+    timeStamp: post.timeStamp,
+  });
+  if (secret === process.env.BLOG_SECRET) {
+    const updatedPost = await PostModel.findByIdAndUpdate(req.params.postId, updatePost, {});
+    console.log("Article Updated Successfully");
+    res.json({
+      error: false,
+      message: "Article Updated Successfully",
+      postId: post._id,
+      redirect: '/',
+    });
+  } else {
+    console.log("Wrong Secret");
+    res.json({
+      error: true,
+      message: "Unauthorized",
+      postId: post._id,
+    });
+  }
 });
 
 /* Delete an existing post */
