@@ -30,9 +30,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+//// ------ Custom Methods for Forms ------ ////
+app.use((req, res, next) => {
+  if (req.body && req.body._method) {
+    req.method = req.body._method;
+    delete req.body._method;
+  }
+  next();
+});
 
 app.use('/', indexRouter); // create, post, & error views
-app.use('/api', apiRouter);
+app.use('/api', apiRouter); // api only
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

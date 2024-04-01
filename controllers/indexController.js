@@ -83,8 +83,42 @@ exports.detail_post = asyncHandler(async (req, res, next) => {
 });
 
 /* DELETE Post */
+exports.delete_post = asyncHandler(async (req, res, next) => {
+  const secret = req.body.secret;
+  const result = await fetch(`http://127.0.01:3000/api/post/${req.params.postId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      secret: secret,
+    }),
+  })
+  .then( data => data.json() )
+  .catch( error => {
+      res.render('error', {
+        message: "Could not delete post",
+        error: {
+          status: null,
+          stack: "indexController: delete_post",
+        }
+      });
+    });
+  if (result.error === true) {
+    console.log("result block");
+    res.render('error', {
+      message: "Could not delete post",
+      error: {
+        status: null,
+        stack: "indexController: delete_post",
+      }
+    })
+  } else {
+    res.redirect('/');
+  }
+});
 
-/* Update Post */
+/* PUT Post */
 
 /* Create Comment */
 exports.create_comment = asyncHandler(async (req, res, next) => {

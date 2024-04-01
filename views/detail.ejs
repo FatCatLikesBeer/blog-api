@@ -14,13 +14,71 @@
       </div>
     <% }); %>
     <div class="controls">
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="">Comment</button>
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalComment">Comment</button>
       <div class="adminControls">
         <div>
-          <a href="#" style="color: gold;">Update</a>
+          <span style="color: gold;">Update</span>
         </div>
         <div>
-          <a href="#" style="color: salmon;">Delete</a>
+          <span style="color: salmon;" data-toggle="modal" data-target="#modalDelete">Delete</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Comment Modal -->
+  <div class="modal fade" id="modalComment" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ModalLabel">Leave Comment</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Comment Form Group -->
+          <form method="POST" action="/create/comment">
+            <div class="form-group">
+              <label for="author">Author:</label>
+              <input id="author" class="form-control" type="text" name="author" required />
+              <br>
+              <label for="body">Body:</label>
+              <textarea id="body" class="form-control" name="body" style="height: 150px;" required></textarea>
+              <input id="<%= post._id %>" name="postId" value="<%= post._id %>" hidden />
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <input class="btn btn-primary" type="submit" value="Submit">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ModalLabel">Delete Post</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Comment Form Group -->
+          <form method="POST" action="/post/<%= post._id %>">
+            <div class="form-group">
+              <input type="hidden" name="_method" value="DELETE" />
+              <label for="secret">Password:</label>
+              <input id="secret" name="secret" class="form-control" type="password" />
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <input class="btn btn-primary" type="submit" value="Submit">
+            </div>
+          </form>
         </div>
       </div>
     </div>

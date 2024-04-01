@@ -4,7 +4,7 @@
     <div class="post">
       <h2 style="color: gold;"><a href="<%= post.url %>"><%= post.title %></a></h2>
       <div class="properties">
-        <span><%= post.author %><span> </span><%= post.date %></span>
+        <span><%= post.author %><span>: </span><%= post.date %></span>
       </div>
       <%- post.body %>
       <!-- If post has comments, display comment -->
@@ -12,7 +12,7 @@
         <% if (comment.post === post._id) { %>
           <div class="comment">
             <div class="properties">
-              <span><%= comment.author %></span> <span><%= comment.date %></span>
+              <span><%= comment.author %></span>: <span><%= comment.date %></span>
             </div>
             <%- comment.body %>
           </div>

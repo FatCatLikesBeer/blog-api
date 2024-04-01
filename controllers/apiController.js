@@ -137,46 +137,32 @@ exports.api_post_update = asyncHandler(async (req, res, next) => {
 /* Delete an existing post */
 exports.api_post_delete = asyncHandler(async (req, res, next) => {
   const secret = req.body.secret;
-  let post;
+  const postId = req.params.postId;
   if (secret === process.env.BLOG_SECRET) {
-    try {
-      const condition = { post: req.params.postId };
-      post = await PostModel.findById(req.params.postId).exec();
-      await CommentModel.deleteMany(condition).catch( error => {
-        console.error("Error deleting comments", error);
-      });
-      await PostModel.findByIdAndDelete(req.params.postId);
-      res.json({
-        error: false,
-        message: "Post Deleted Successfully",
-        postId: req.params.postId,
-        redirect: "/",
-        data: null,
-      });
-      routeLog(req, "Post Deleted Successfully");
-    } catch (error) {
-      res.json({
-        error: true,
-        message: "Error finding post by ID.",
-        postId: req.params.postId,
-      });
-      routeLog(req, "Error finding post by ID.", "error");
-    }
+    const condition = { post: postId };
+    await CommentModel.deleteMany(condition);
+    await PostModel.findByIdAndDelete(postId);
+    routeLog(req, "Post and/or Comments Deleted Successfully")
+    res.json({
+      error: false,
+      message: "Post and/or Comment Deleted Successful",
+      redirect: "/",
+    });
   } else {
     res.json({
       error: true,
       message: "Unauthorized",
-      postId: req.params.postId,
-    });
-    routeLog(req, "Wrong secret", "error");
-  }
+      postId: postId,
+    })
+    routeLog(req, "Unauthorized", error);
+  };
 });
 
 /* Get post detail */
 exports.api_post_detail = asyncHandler(async (req, res, next) => {
   try {
     const post = await PostModel.findById(req.params.postId).exec();
-    const comments = await CommentModel.find({ post: req.params.postId }).exec();
+    const comments = await CommentModel.find({ post: req.params.postId }).sort({ timeStamp: -1 }).exec();
     const parsedPost = {
       title: post.title,
       body: marked.parse(post.body),
