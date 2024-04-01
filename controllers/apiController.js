@@ -171,6 +171,7 @@ exports.api_post_detail = asyncHandler(async (req, res, next) => {
       date: post.date,
       url: post.url,
       type: post.type,
+      originalBody: post.body,
     }
     const parsedComments = comments.map( comment => {
       const result = {

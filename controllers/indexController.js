@@ -118,7 +118,54 @@ exports.delete_post = asyncHandler(async (req, res, next) => {
   }
 });
 
-/* PUT Post */
+/* GET Post: Update Post */
+exports.create_update_get = asyncHandler(async (req, res, next) => {
+  const postId = req.params.postId;
+  const result = await fetch(`http://127.0.01:3000/api/post/${postId}`)
+    .then( data => data.json() );
+  console.log(result);
+  if (result.error === true) {
+    res.render('error', {
+      message: "Error retrieving post for update",
+      error: {
+        status: null,
+        stack: "indexController: create_update_get"
+      }
+    })
+  } else {
+    res.render('post', {
+      post: result.data.post,
+    });
+  }
+});
+
+/* PUT Post: Process Post Update PUT request */
+exports.update_post = asyncHandler(async (req, res, next) => {
+  const postId = req.params.postId;
+  const result = await fetch(`http://127.0.01:3000/api/post/${postId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      title: req.body.title,
+      body: req.body.body,
+      secret: req.body.secret,
+    }),
+  })
+  .then( data => data.json() );
+  if (result.error === true) {
+    res.rendere('error', {
+      message: "Error updating post",
+      error: {
+        status: null,
+        stack: "indexController: update_post",
+      }
+    })
+  } else {
+    res.redirect(result.redirect);
+  }
+});
 
 /* Create Comment */
 exports.create_comment = asyncHandler(async (req, res, next) => {

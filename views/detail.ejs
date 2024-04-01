@@ -17,7 +17,7 @@
       <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalComment">Comment</button>
       <div class="adminControls">
         <div>
-          <span style="color: gold;">Update</span>
+          <a href="/create/<%= post._id %>" style="color: gold;">Update</a>
         </div>
         <div>
           <span style="color: salmon;" data-toggle="modal" data-target="#modalDelete">Delete</span>
@@ -25,6 +25,7 @@
       </div>
     </div>
   </div>
+
   <!-- Comment Modal -->
   <div class="modal fade" id="modalComment" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

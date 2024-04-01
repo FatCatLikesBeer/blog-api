@@ -1,4 +1,25 @@
 <%- include('layout_top')-%>
+<% if (typeof post != "undefined") { %>
+<% console.log(post); %>
+  <!-- Update Mode -->
+  <div style="padding: 0px 20px;">
+  <h2>Update Post</h2>
+  <form method="POST" action="/post/<%= post._id %>">
+    <div class="form-group">
+      <label for="title">Title:</label>
+      <input id="formTitle" class="form-control" type="text" name="title" value="<%= post.title %>"/>
+      <label for="body">Body:</label>
+      <textarea id="body" class="form-control" name="body" style="height: 400px;"><%= post.originalBody %></textarea>
+      <label for="password">Password:</label>
+      <input id="password" class="form-control" type="password" name="secret" />
+      <input type="hidden" name="_method" value="PUT" />
+    </div>
+    <br>
+    <input class="btn btn-primary" type="submit" value="Submit">
+  </form>
+  </div>
+<% } else { %>
+  <!-- Create Mode -->
   <div style="padding: 0px 20px;">
   <h2>Create Post</h2>
   <form method="POST" action="/create">
@@ -14,4 +35,5 @@
     <input class="btn btn-primary" type="submit" value="Submit">
   </form>
   </div>
+<% } %>
 <%- include('layout_bottom')-%>
