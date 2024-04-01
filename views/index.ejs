@@ -1,4 +1,5 @@
 <%- include('layout_top')-%>
+  <!-- Display posts -->
   <% posts.forEach( post => { %>
     <div class="post">
       <h2 style="color: gold;"><a href="<%= post.url %>"><%= post.title %></a></h2>
@@ -6,6 +7,7 @@
         <%= post.author %> - <%= post.date %>
       </div>
       <%- post.body %>
+      <!-- If post has comments, display comment -->
       <% comments.forEach( comment => { %>
         <% if (comment.post === post._id) { %>
           <div class="comment">
@@ -16,7 +18,37 @@
           </div>
         <% } %>
     <% }); %>
-    <button type="button" class="btn btn-primary">Comment</button>
+    <!-- Comment Modal -->
+    <!-- Thank ChatGPT -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Leave Comment</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!-- Comment Form Group -->
+            <form method="POST" action="/create/<%= post._id %>">
+              <div class="form-group">
+                <label for="author">Author:</label>
+                <input id="author" class="form-control" type="text" name="author" required />
+                <br>
+                <label for="body">Body:</label>
+                <textarea id="body" class="form-control" name="body" style="height: 150px;" required></textarea>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <input class="btn btn-primary" type="submit" value="Submit">
+              </div>
+           </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Comment</button>
     </div>
   <% }); %>
 <%- include('layout_bottom')-%>

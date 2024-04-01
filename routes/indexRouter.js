@@ -12,8 +12,11 @@ router.get('/post', (req, res, next) => {res.redirect('/')});
 /* Page for creating a post */
 router.get('/create', indexController.create_get);
 
-/* Page for sumbittim a post */
+/* Page for submitting a post */
 router.post('/create', indexController.create_post);
+
+/* Route for submitting a comment */
+router.post('/create/:postId', indexController.create_comment);
 
 /* Dedicated page for handling errors */
 router.get('/error', (req, res, next) => {

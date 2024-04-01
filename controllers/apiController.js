@@ -228,24 +228,26 @@ exports.api_comment_create = asyncHandler(async (req, res, next) => {
     body: body,
     author: author,
   });
-  try {
-    await newComment.save();
-    res.json({
-      error: false,
-      message: "Comment Posted Successfully",
-      postId: post,
-      redirect: `${newComment.url}`,
-      data: null
-    })
-    routeLog(req, "Comment Posted Successfully");
-  } catch (error) {
+  await newComment.save()
+  .then( savedComment => {
+    console.log("Comment Saved", savedComment);
+  })
+  .catch( error => {
+    routeLog(req, "Comment Posting Failed", "error");
+    console.error(error);
     res.json({
       error: true,
       message: "Comment Posting Failed",
       postId: post,
     });
-    routeLog(req, "Comment Posting Failed", "error");
-  }
+  });
+  res.json({
+    error: false,
+    message: "Comment Posted Successfully",
+    postId: post,
+    redirect: "/",
+    data: null,
+  });
 });
 
 /* Delete a comment */

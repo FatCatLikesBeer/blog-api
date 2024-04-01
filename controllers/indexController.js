@@ -53,6 +53,33 @@ exports.create_post = asyncHandler(async (req, res, next) => {
   }
 });
 
+/* Create Comment */
+exports.create_comment = asyncHandler(async (req, res, next) => {
+  const commentData = {
+    author: req.body.author,
+    body: req.body.body,
+  };
+  const newComment = await fetch(`http://127.0.01:3000/api/post/${req.params.postId}/comment`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(commentData),
+  })
+  .then( data => data.json() );
+  if (newComment.error === true) {
+    res.render('error', {
+      message: "Error Posting Message",
+      error: {
+        status: null,
+        stack: "indexController",
+      }
+    });
+  } else {
+    res.redirect('/');
+  }
+});
+
 // Error Structure
 // {
 //   message: message,
