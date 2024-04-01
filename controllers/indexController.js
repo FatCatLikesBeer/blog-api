@@ -32,12 +32,17 @@ exports.create_get = (req, res, next) => {
 
 /* Create post page POST */
 exports.create_post = asyncHandler(async (req, res, next) => {
+  const [secret, title, body] = [req.body.secret, req.body.title, req.body.body];
   const apiEndpoint = await fetch('http://127.0.01:3000/api/post', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(req.body),
+    body: JSON.stringify({
+      secret: secret,
+      body: body,
+      title: title,
+    }),
   })
   .then( data => data.json() );
   if (apiEndpoint.error) {
@@ -56,10 +61,12 @@ exports.create_post = asyncHandler(async (req, res, next) => {
 /* Create Comment */
 exports.create_comment = asyncHandler(async (req, res, next) => {
   const commentData = {
+    postId: req.body.postId,
     author: req.body.author,
     body: req.body.body,
   };
-  const newComment = await fetch(`http://127.0.01:3000/api/post/${req.params.postId}/comment`, {
+  console.log("Comment Data", commentData);
+  const newComment = await fetch("http://127.0.01:3000/api/comment", {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

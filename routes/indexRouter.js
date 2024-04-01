@@ -16,7 +16,7 @@ router.get('/create', indexController.create_get);
 router.post('/create', indexController.create_post);
 
 /* Route for submitting a comment */
-router.post('/create/:postId', indexController.create_comment);
+router.post('/create/comment', indexController.create_comment);
 
 /* Dedicated page for handling errors */
 router.get('/error', (req, res, next) => {

@@ -22,12 +22,15 @@ router.get('/post/:postId', apiController.api_post_detail);
 
 ////// -------- COMMENT ROUTES -------- //////
 /* POST a new comment */
-router.post('/post/:postId/comment', apiController.api_comment_create);
+router.post('/comment', apiController.api_comment_create);
 
 /* DELETE a comment */
 router.delete('/comment/:commentId', apiController.api_comment_delete);
 
 /* GET comment detail */
 router.get('/comment/:commentId', apiController.api_comment_detail);
+
+/* Just Log Request */
+router.post('/logger', apiController.api_logger);
 
 module.exports = router;

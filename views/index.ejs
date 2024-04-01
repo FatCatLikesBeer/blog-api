@@ -20,24 +20,34 @@
     <% }); %>
     <!-- Comment Modal -->
     <!-- Thank ChatGPT -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <% function generateId() { %>
+      <% let result = ""; %>
+      <% for (let i = 0; i < 10; i++) { %>
+        <% let char = String.fromCharCode(65 + Math.floor(Math.random() * 26)); %>
+        <% result = result + char; %>
+      <% } %>
+      <% return result; %>
+    <% }; %>
+    <% let modalId = generateId() %>
+    <div class="modal fade" id="<%= modalId %>" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Leave Comment</h5>
+            <h5 class="modal-title" id="ModalLabel">Leave Comment</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
             <!-- Comment Form Group -->
-            <form method="POST" action="/create/<%= post._id %>">
+            <form method="POST" action="/create/comment">
               <div class="form-group">
                 <label for="author">Author:</label>
                 <input id="author" class="form-control" type="text" name="author" required />
                 <br>
                 <label for="body">Body:</label>
                 <textarea id="body" class="form-control" name="body" style="height: 150px;" required></textarea>
+                <input id="<%= post._id %>" name="postId" value="<%= post._id %>" hidden />
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -48,7 +58,7 @@
         </div>
       </div>
     </div>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Comment</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#<%= modalId %>">Comment</button>
     </div>
   <% }); %>
 <%- include('layout_bottom')-%>

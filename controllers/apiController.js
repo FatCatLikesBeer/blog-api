@@ -222,15 +222,16 @@ exports.api_post_detail = asyncHandler(async (req, res, next) => {
 ////// ------ COMMENT APIs ------ //////
 /* Create a new comment */
 exports.api_comment_create = asyncHandler(async (req, res, next) => {
-  const [post, body, author] = [req.params.postId, req.body.body, req.body.author];
+  const [postId, body, author] = [req.body.postId, req.body.body, req.body.author];
   const newComment = new CommentModel({
-    post: post,
+    post: postId,
     body: body,
     author: author,
   });
   await newComment.save()
   .then( savedComment => {
-    console.log("Comment Saved", savedComment);
+    console.log("Comment Saved: ", savedComment);
+    routeLog(req, "Comment Saved");
   })
   .catch( error => {
     routeLog(req, "Comment Posting Failed", "error");
@@ -238,13 +239,13 @@ exports.api_comment_create = asyncHandler(async (req, res, next) => {
     res.json({
       error: true,
       message: "Comment Posting Failed",
-      postId: post,
+      postId: postId,
     });
   });
   res.json({
     error: false,
     message: "Comment Posted Successfully",
-    postId: post,
+    postId: postId,
     redirect: "/",
     data: null,
   });
@@ -304,6 +305,15 @@ exports.api_comment_detail = asyncHandler(async (req, res, next) => {
     });
     routeLog(req, "Comment Detail Retrieval Failed", "error");
   };
+});
+
+/* Logger */
+exports.api_logger = asyncHandler(async (req, res, next) => {
+  res.json({
+    author: req.body.author,
+    body: req.body.body,
+    post: req.body.postId,
+  });
 });
 
 // Error message layout
