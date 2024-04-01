@@ -46,7 +46,7 @@
                 <input id="author" class="form-control" type="text" name="author" required />
                 <br>
                 <label for="body">Body:</label>
-                <textarea id="body" class="form-control" name="body" style="height: 150px;" required></textarea>
+                <textarea id="body" class="form-control" name="body" style="height: 150px;" required maxlength="400"></textarea>
                 <input id="<%= post._id %>" name="postId" value="<%= post._id %>" hidden />
               </div>
               <div class="modal-footer">
