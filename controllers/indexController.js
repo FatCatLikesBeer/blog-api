@@ -58,6 +58,34 @@ exports.create_post = asyncHandler(async (req, res, next) => {
   }
 });
 
+/* GET: Post Detail */
+exports.detail_post = asyncHandler(async (req, res, next) => {
+  const postId = req.params.postId;
+  const postData = await fetch(`http://127.0.01:3000/api/post/${postId}`)
+  .then( data => data.json() )
+  .catch( error => {
+    });
+  if (postData.error === true) {
+    console.log(postData);
+    res.render('error', {
+      message: "Unable to fetch post details",
+      error: {
+        staus: "",
+        stack: "",
+      }
+    });
+  } else {
+    res.render('detail', {
+      post: postData.data.post,
+      comments: postData.data.comments,
+    });
+  }
+});
+
+/* DELETE Post */
+
+/* Update Post */
+
 /* Create Comment */
 exports.create_comment = asyncHandler(async (req, res, next) => {
   const commentData = {

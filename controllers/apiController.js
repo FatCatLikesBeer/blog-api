@@ -51,7 +51,7 @@ exports.api_get_all_content = asyncHandler(async (req, res, next) => {
       post: comment.post,
       _id: comment._id,
       author: comment.author,
-      body: comment.body,
+      body: marked.parse(comment.body),
       date: comment.date,
       url: comment.url,
     }
@@ -189,9 +189,9 @@ exports.api_post_detail = asyncHandler(async (req, res, next) => {
     const parsedComments = comments.map( comment => {
       const result = {
         post: comment.post,
-        _id: comment.post,
+        _id: comment._id,
         body: marked.parse(comment.body),
-        author: comment.body,
+        author: comment.author,
         date: comment.date,
         url: comment.url,
       };

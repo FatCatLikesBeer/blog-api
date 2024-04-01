@@ -33,6 +33,13 @@ a {
 
 .properties {
   color: grey;
+  font: 12px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 @media ( max-width: 900px ) {

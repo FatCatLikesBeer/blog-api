@@ -18,6 +18,15 @@ router.post('/create', indexController.create_post);
 /* Route for submitting a comment */
 router.post('/create/comment', indexController.create_comment);
 
+/* Route for Post Detail */
+router.get('/post/:postId', indexController.detail_post);
+
+// /* Route to Delete Post */
+// router.delete('/:postId', indexController.delete_post);
+//
+// /* Route to update post */
+// router.put('/:postId', indexController.update_post);
+
 /* Dedicated page for handling errors */
 router.get('/error', (req, res, next) => {
   let message = "Nondescript error.";
