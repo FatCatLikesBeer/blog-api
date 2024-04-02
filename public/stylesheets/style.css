@@ -1,12 +1,16 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background-color: #282828;
+  background-color: #282828 !important;
   align-items: center;
 }
 
 a {
   color: dodgerblue;
+}
+
+p, h2, h3, h4, h5 {
+  color: gainsboro !important;
 }
 
 #title {
