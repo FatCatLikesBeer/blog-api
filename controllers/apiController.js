@@ -4,7 +4,7 @@ const PostModel = require('../models/postSchema.js');
 const CommentModel = require('../models/commentSchema.js');
 const marked = require('marked');
 
-const routeLog = (req, message, state) => {
+const apiLog = (req, message, state) => {
   let color = "\x1b[32m";
   if (state === "error") {
     color = "\x1b[31m";
@@ -31,7 +31,7 @@ exports.api_get_all_content = asyncHandler(async (req, res, next) => {
       message: "Problem Retrieving Posts 😕",
       postId: null,
     });
-    routeLog(req, "Problem retrieving posts/comments from ORM", "error");
+    apiLog(req, "Problem retrieving posts/comments from ORM", "error");
   };
   // Mapping is needed to get the virtual properties to work properly.
   allPosts = getPosts.map( post => {
@@ -67,7 +67,7 @@ exports.api_get_all_content = asyncHandler(async (req, res, next) => {
       comments: allComments,
     },
   });
-  routeLog(req, "Posts & Comments Retrieved Successfully");
+  apiLog(req, "Posts & Comments Retrieved Successfully");
 });
 
 /* Create a new post */
@@ -80,7 +80,7 @@ exports.api_post_create = asyncHandler(async (req, res, next) => {
         message: "Post needs a title and a body!",
         postId: null,
       });
-      routeLog(req, "Post request lacks title & body!", "error")
+      apiLog(req, "Post request lacks title & body!", "error")
     };
     const post = new PostModel({
       title: title,
@@ -93,14 +93,14 @@ exports.api_post_create = asyncHandler(async (req, res, next) => {
       postId: post._id,
       redirect: `/post/${post._id}`,
     });
-    routeLog(req, "Article Posted Successfully");
+    apiLog(req, "Article Posted Successfully");
   } else {
     res.json({
       error: true,
       message: "Unauthorized",
       postId: null,
     });
-    routeLog(req, "Wrong secret", "error");
+    apiLog(req, "Wrong secret", "error");
   };
 });
 
@@ -123,14 +123,14 @@ exports.api_post_update = asyncHandler(async (req, res, next) => {
       postId: post._id,
       redirect: `/post/${post._id}`,
     });
-    routeLog(req, "Article Updated Successfully");
+    apiLog(req, "Article Updated Successfully");
   } else {
     res.json({
       error: true,
       message: "Unauthorized",
       postId: post._id,
     });
-    routeLog(req, "Wrong Secret", "error");
+    apiLog(req, "Wrong Secret", "error");
   }
 });
 
@@ -142,7 +142,7 @@ exports.api_post_delete = asyncHandler(async (req, res, next) => {
     const condition = { post: postId };
     await CommentModel.deleteMany(condition);
     await PostModel.findByIdAndDelete(postId);
-    routeLog(req, "Post and/or Comments Deleted Successfully")
+    apiLog(req, "Post and/or Comments Deleted Successfully")
     res.json({
       error: false,
       message: "Post and/or Comment Deleted Successful",
@@ -154,7 +154,7 @@ exports.api_post_delete = asyncHandler(async (req, res, next) => {
       message: "Unauthorized",
       postId: postId,
     })
-    routeLog(req, "Unauthorized", error);
+    apiLog(req, "Unauthorized", error);
   };
 });
 
@@ -194,7 +194,7 @@ exports.api_post_detail = asyncHandler(async (req, res, next) => {
         comments: parsedComments,
       },
     });
-    routeLog(req, "Post Retrieved Successfully")
+    apiLog(req, "Post Retrieved Successfully")
   } catch (error) {
     console.log(error);
     res.json({
@@ -202,7 +202,7 @@ exports.api_post_detail = asyncHandler(async (req, res, next) => {
       message: "Post Retrieval Failed",
       postId: req.params.postId,
     });
-    routeLog(req, "Post Retrieval Failed", "error");
+    apiLog(req, "Post Retrieval Failed", "error");
   }
 });
 
@@ -218,10 +218,10 @@ exports.api_comment_create = asyncHandler(async (req, res, next) => {
   await newComment.save()
   .then( savedComment => {
     console.log("Comment Saved: ", savedComment);
-    routeLog(req, "Comment Saved");
+    apiLog(req, "Comment Saved");
   })
   .catch( error => {
-    routeLog(req, "Comment Posting Failed", "error");
+    apiLog(req, "Comment Posting Failed", "error");
     console.error(error);
     res.json({
       error: true,
@@ -240,36 +240,71 @@ exports.api_comment_create = asyncHandler(async (req, res, next) => {
 
 /* Delete a comment */
 exports.api_comment_delete = asyncHandler(async (req, res, next) => {
+  const commentId = req.params.commentId;
   const secret = req.body.secret;
   if (secret === process.env.BLOG_SECRET) {
-    try {
-      const comment = await CommentModel.findById(req.params.commentId).exec();
-      const post = await PostModel.findById(comment.post).exec();
-      await CommentModel.findByIdAndDelete(req.params.commentId);
-      res.json({
-        error: false,
-        message: "Comment Deleted Successfully",
-        commentId: req.params.commentId,
-        redirect: post.url,
-        data: null,
-      })
-      routeLog(req, "Comment Deleted Successfully");
-    } catch (error) {
-      res.json({
-        error: true,
-        message: "Comment Deletion Failed",
-        commentId: req.params.commentId,
-      })
-      routeLog(req, "Comment Deletion Failed", "error");
-    }
+    const comment = await CommentModel.findById(commentId).exec()
+    .catch( error => {
+        console.error("Delete Comment: Error finding comment to delete", error);
+        res.json({
+          error: true,
+          message: "Delete Comment: Error finding comment to delete",
+          redirect: null,
+        });
+      });
+    const post = await PostModel.findById(comment.post).exec()
+    .catch( error => {
+        console.error("Delete Comment: Error finding comment's parent post", error);
+        res.json({
+          error: true,
+          message: "Delete Comment: Error finding comment's parent post",
+          redirect: null,
+        });
+      });
+    await CommentModel.findByIdAndDelete(commentId);
+    res.json({
+      error: false,
+      message: "Comment Deleted Successfully",
+      redirect: post.url,
+      data: null,
+    })
   } else {
     res.json({
       error: true,
       message: "Unauthorized",
       commentId: req.params.commentId,
-    });
-    routeLog(req, "Wrong Secret", "error");
+    })
   };
+
+  // if (secret === process.env.BLOG_SECRET) {
+  //   try {
+  //     const comment = await CommentModel.findById(req.params.commentId).exec();
+  //     const post = await PostModel.findById(comment.post).exec();
+  //     await CommentModel.findByIdAndDelete(req.params.commentId);
+  //     res.json({
+  //       error: false,
+  //       message: "Comment Deleted Successfully",
+  //       commentId: req.params.commentId,
+  //       redirect: post.url,
+  //       data: null,
+  //     })
+  //     apiLog(req, "Comment Deleted Successfully");
+  //   } catch (error) {
+  //     res.json({
+  //       error: true,
+  //       message: "Comment Deletion Failed",
+  //       commentId: req.params.commentId,
+  //     })
+  //     apiLog(req, "Comment Deletion Failed", "error");
+  //   }
+  // } else {
+  //   res.json({
+  //     error: true,
+  //     message: "Unauthorized",
+  //     commentId: req.params.commentId,
+  //   });
+  //   apiLog(req, "Wrong Secret", "error");
+  // };
 });
 
 /* Get comment detail */
@@ -283,14 +318,14 @@ exports.api_comment_detail = asyncHandler(async (req, res, next) => {
       redirect: comment.url,
       data: comment,
     });
-    routeLog(req, "Comment Detail Retrieved Successfully");
+    apiLog(req, "Comment Detail Retrieved Successfully");
   } catch (error) {
     res.json({
       error: true,
       message: "Comment Detail Retrieval Failed",
       commentId: req.params.commentId,
     });
-    routeLog(req, "Comment Detail Retrieval Failed", "error");
+    apiLog(req, "Comment Detail Retrieval Failed", "error");
   };
 });
 

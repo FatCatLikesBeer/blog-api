@@ -30,6 +30,9 @@ router.get('/create/:postId', indexController.create_update_get);
 /* Route to update post */
 router.put('/post/:postId', indexController.update_post);
 
+/* Route for deleting comment */
+router.delete('/comment/:commentId', indexController.delete_comment);
+
 /* Dedicated page for handling errors */
 router.get('/error', (req, res, next) => {
   let message = "Nondescript error.";

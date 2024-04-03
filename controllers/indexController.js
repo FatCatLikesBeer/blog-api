@@ -185,7 +185,7 @@ exports.create_comment = asyncHandler(async (req, res, next) => {
   .then( data => data.json() );
   if (newComment.error === true) {
     res.render('error', {
-      message: "Error Posting Message",
+      message: "Error Posting Comment",
       error: {
         status: null,
         stack: "indexController",
@@ -193,6 +193,38 @@ exports.create_comment = asyncHandler(async (req, res, next) => {
     });
   } else {
     res.redirect('/');
+  }
+});
+
+/* Delete Comment */
+exports.delete_comment = asyncHandler(async (req, res, next) => {
+  const commentId = req.params.commentId;
+  const secret = req.body.secret;
+  const data = {
+    secret: secret,
+  }
+  const result = await fetch(`http://127.0.01:3000/api/comment/${commentId}`, {
+    method: "DELETE",
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+  .then( data => data.json() )
+  .catch( error => {
+      console.error("Error deleting comment: indexController: delete_comment log: ", error);
+      res.send("Error deleting comment");
+    })
+  if (result.error === true) {
+    res.render('error', {
+      message: result.message,
+      error: {
+        status: null,
+        stack: "indexController: delete_comment",
+      }
+    })
+  } else {
+    res.redirect(result.redirect);
   }
 });
 

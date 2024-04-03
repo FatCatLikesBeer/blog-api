@@ -3,13 +3,24 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   background-color: #282828 !important;
   align-items: center;
+  color: gainsboro !important;
 }
 
 a {
   color: dodgerblue;
 }
 
-p, h2, h3, h4, h5 {
+.comment-delete {
+  color: salmon;
+  font: 8px;
+}
+
+.modal-dialog > *, input, textarea {
+  color: gainsboro !important;
+  background-color: #282828 !important;
+}
+
+pre {
   color: gainsboro !important;
 }
 
@@ -39,6 +50,11 @@ p, h2, h3, h4, h5 {
   color: grey;
   font: 12px "Lucida Grande", Helvetica, Arial, sans-serif;
   margin-bottom: 8px;
+}
+
+.detail {
+  display: flex;
+  justify-content: space-between;
 }
 
 .controls {

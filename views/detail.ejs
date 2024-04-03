@@ -5,13 +5,53 @@
       <span><%= post.author %><span>: </span><%= post.date %></span>
     </div>
     <%- post.body %>
+    <% function generateId() { %>
+      <% let result = ""; %>
+      <% for (let i = 0; i < 10; i++) { %>
+        <% let char = String.fromCharCode(65 + Math.floor(Math.random() * 26)); %>
+        <% result = result + char; %>
+      <% } %>
+      <% return result; %>
+    <% }; %>
     <% comments.forEach( comment => { %>
+    <% let modalId = generateId() %>
       <div class="comment">
-        <div class="properties">
-          <span><%= comment.author %></span>: <span><%= comment.date %></span>
+        <div class="properties detail">
+          <span><%= comment.author %>: <%= comment.date %></span><span class="comment-delete" data-toggle="modal" data-target="#<%= modalId %>">Delete</span>
         </div>
         <%- comment.body %>
       </div>
+
+    <!-- Comment Deletion Modal -->
+    <!-- Need a new modal for each comment I guess -->
+    <div class="modal fade" id="<%= modalId %>" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="ModalLabel">Delete Comment</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!-- Comment Form Group -->
+            <form method="POST" action="/comment/<%= comment._id %>">
+              <div class="form-group">
+                <input type="hidden" name="_method" value="DELETE" />
+                <label for="secret">Password:</label>
+                <input id="secret" name="secret" class="form-control" type="password" />
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button class="btn btn-primary" type="submit">Submit</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Comment Deletion Modal -->
+
     <% }); %>
     <div class="controls">
       <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalComment">Comment</button>
@@ -49,7 +89,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <input class="btn btn-primary" type="submit" value="Submit">
+              <button class="btn btn-primary" type="submit">Submit</button>
             </div>
           </form>
         </div>
@@ -77,7 +117,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <input class="btn btn-primary" type="submit" value="Submit">
+              <button class="btn btn-primary" type="submit">Submit</button>
             </div>
           </form>
         </div>
