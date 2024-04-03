@@ -275,36 +275,6 @@ exports.api_comment_delete = asyncHandler(async (req, res, next) => {
       commentId: req.params.commentId,
     })
   };
-
-  // if (secret === process.env.BLOG_SECRET) {
-  //   try {
-  //     const comment = await CommentModel.findById(req.params.commentId).exec();
-  //     const post = await PostModel.findById(comment.post).exec();
-  //     await CommentModel.findByIdAndDelete(req.params.commentId);
-  //     res.json({
-  //       error: false,
-  //       message: "Comment Deleted Successfully",
-  //       commentId: req.params.commentId,
-  //       redirect: post.url,
-  //       data: null,
-  //     })
-  //     apiLog(req, "Comment Deleted Successfully");
-  //   } catch (error) {
-  //     res.json({
-  //       error: true,
-  //       message: "Comment Deletion Failed",
-  //       commentId: req.params.commentId,
-  //     })
-  //     apiLog(req, "Comment Deletion Failed", "error");
-  //   }
-  // } else {
-  //   res.json({
-  //     error: true,
-  //     message: "Unauthorized",
-  //     commentId: req.params.commentId,
-  //   });
-  //   apiLog(req, "Wrong Secret", "error");
-  // };
 });
 
 /* Get comment detail */
