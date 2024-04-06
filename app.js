@@ -7,18 +7,12 @@ const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
 require('dotenv').config();
+require('./dbConfigs.js/mongoConfig.js');
 
 const indexRouter = require('./routes/indexRouter');
 const apiRouter = require('./routes/apiRouter');
 
 const app = express();
-
-//// ------ MongoDB Stuff ------ ////
-const mongoose = require("mongoose");
-const mongoDB = process.env.MONGODB_BLOG;
-mongoose.connect(mongoDB);
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "MongoDb connection error"));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
