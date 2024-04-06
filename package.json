@@ -21,6 +21,7 @@
     "jsonwebtoken": "^9.0.2",
     "luxon": "^3.4.4",
     "marked": "^12.0.1",
+    "mongodb-memory-server": "^9.1.8",
     "mongoose": "^8.2.2",
     "morgan": "~1.9.1"
   },
