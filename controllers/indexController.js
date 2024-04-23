@@ -5,7 +5,7 @@ const marked = require('marked');
 
 /* Index page GET */
 exports.index_get = asyncHandler(async (req, res, next) => {
-  const allPosts = await fetch('http://127.0.01:3000/api/post').then(data => data.json());
+  const allPosts = await fetch('http://127.0.0.1:3000/api/post').then(data => data.json());
   if (allPosts.error === false) {
     res.render('index', {
       title: "Billy's Blog",
@@ -33,7 +33,7 @@ exports.create_get = (req, res, next) => {
 /* Create post page POST */
 exports.create_post = asyncHandler(async (req, res, next) => {
   const [secret, title, body] = [req.body.secret, req.body.title, req.body.body];
-  const apiEndpoint = await fetch('http://127.0.01:3000/api/post', {
+  const apiEndpoint = await fetch('http://127.0.0.1:3000/api/post', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ exports.create_post = asyncHandler(async (req, res, next) => {
 /* GET: Post Detail */
 exports.detail_post = asyncHandler(async (req, res, next) => {
   const postId = req.params.postId;
-  const postData = await fetch(`http://127.0.01:3000/api/post/${postId}`)
+  const postData = await fetch(`http://127.0.0.1:3000/api/post/${postId}`)
   .then( data => data.json() )
   .catch( error => {
     });
@@ -85,7 +85,7 @@ exports.detail_post = asyncHandler(async (req, res, next) => {
 /* DELETE Post */
 exports.delete_post = asyncHandler(async (req, res, next) => {
   const secret = req.body.secret;
-  const result = await fetch(`http://127.0.01:3000/api/post/${req.params.postId}`, {
+  const result = await fetch(`http://127.0.0.1:3000/api/post/${req.params.postId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -121,7 +121,7 @@ exports.delete_post = asyncHandler(async (req, res, next) => {
 /* GET Post: Update Post */
 exports.create_update_get = asyncHandler(async (req, res, next) => {
   const postId = req.params.postId;
-  const result = await fetch(`http://127.0.01:3000/api/post/${postId}`)
+  const result = await fetch(`http://127.0.0.1:3000/api/post/${postId}`)
     .then( data => data.json() );
   console.log(result);
   if (result.error === true) {
@@ -142,7 +142,7 @@ exports.create_update_get = asyncHandler(async (req, res, next) => {
 /* PUT Post: Process Post Update PUT request */
 exports.update_post = asyncHandler(async (req, res, next) => {
   const postId = req.params.postId;
-  const result = await fetch(`http://127.0.01:3000/api/post/${postId}`, {
+  const result = await fetch(`http://127.0.0.1:3000/api/post/${postId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -175,7 +175,7 @@ exports.create_comment = asyncHandler(async (req, res, next) => {
     body: req.body.body,
   };
   console.log("Comment Data", commentData);
-  const newComment = await fetch("http://127.0.01:3000/api/comment", {
+  const newComment = await fetch("http://127.0.0.1:3000/api/comment", {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -203,7 +203,7 @@ exports.delete_comment = asyncHandler(async (req, res, next) => {
   const data = {
     secret: secret,
   }
-  const result = await fetch(`http://127.0.01:3000/api/comment/${commentId}`, {
+  const result = await fetch(`http://127.0.0.1:3000/api/comment/${commentId}`, {
     method: "DELETE",
     headers: {
       'Content-Type': 'application/json',
